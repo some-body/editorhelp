@@ -1,0 +1,25 @@
+service: editorhelp
+frameworkVersion: ">=1.1.0"
+configValidationMode: off
+
+provider:
+  name: yandex-cloud
+  runtime: nodejs12-preview
+
+plugins:
+  - serverless-yandex-cloud
+package:
+  exclude:
+    - ./**
+  include:
+    - ./package.json
+    - ./index.js
+    - ./dist/**/*.js
+
+functions:
+  express:
+    # this is formatted as <FILENAME>.<HANDLER>
+    handler: index.handler
+    memory: 128
+    timeout: 5
+    account: default
