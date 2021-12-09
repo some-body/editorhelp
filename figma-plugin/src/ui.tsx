@@ -1,8 +1,15 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import { App } from './components/app/App';
+import { StartPluginMessage, PluginMessage, PluginMessageType } from './entities/PluginMessage';
 import './ui.css';
 
-document.addEventListener('DOMContentLoaded', () => {
-    ReactDOM.render(<App />, document.getElementById('react-page'));
-});
+figma.ui.onmessage = (msg: PluginMessage) => {
+    switch (msg.type) {
+        case PluginMessageType.StartPlugin:
+            ReactDOM.render(<App startPluginMessage={msg as StartPluginMessage} />, document.getElementById('react-page'));
+            break;
+        default:
+            console.error(`Unknown msg: ${msg}`);
+    }
+};
