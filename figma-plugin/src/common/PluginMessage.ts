@@ -1,3 +1,7 @@
+export interface PluginMessageWrapper {
+    pluginMessage: PluginMessage;
+}
+
 export type PluginMessage = StartPluginMessage;
 
 export enum PluginMessageType { StartPlugin }
@@ -11,7 +15,7 @@ export interface StartPluginMessage extends PluginMessageBase {
     selectedNodes: NodeDto[];
 }
 
-interface NodeDto {
+export interface NodeDto {
     nodeId: string;
     text: string;
 }

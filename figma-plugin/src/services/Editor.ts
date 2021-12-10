@@ -1,5 +1,5 @@
 import { EditResultDto } from "../entities/EditResultDto";
-import { StartPluginMessage } from "../entities/PluginMessage";
+import { StartPluginMessage } from "../common/PluginMessage";
 import { Backend } from "./backend";
 
 export class Editor {

@@ -30,7 +30,7 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
     if (error) {
         return (<>
             <div>Ошибка</div>
-            <div>{error.message}</div>
+            <div>{error.stack}</div>
         </>);
     }
 
