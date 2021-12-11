@@ -11,12 +11,12 @@ export interface EditError {
     suggests: Suggest[];
 }
 
-export interface TextEditResult {
+export interface TextEditResultDto {
     errors: EditError[];
 }
 
 export interface EditResultDto {
-    textEditResults: TextEditResult[];
+    textEditResults: TextEditResultDto[];
 }
 
 export function getEditResultFromJson(json: any): EditResultDto {
@@ -31,7 +31,7 @@ export function getEditResultFromJson(json: any): EditResultDto {
     return { textEditResults: parsedResults };
 }
 
-function getTextEditResultFromJson (json: any): TextEditResult {
+function getTextEditResultFromJson (json: any): TextEditResultDto {
     const { errors } = json || {};
 
     if (!Array.isArray(errors)) {

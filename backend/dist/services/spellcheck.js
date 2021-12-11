@@ -14,11 +14,6 @@ const { checkTexts } = require('yandex-speller');
 class SpellCheck {
     checkTexts(texts) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.checkTextBatch(texts);
-        });
-    }
-    checkTextBatch(texts) {
-        return __awaiter(this, void 0, void 0, function* () {
             return new Promise((res, rej) => {
                 checkTexts(texts, (err, result) => {
                     if (err) {

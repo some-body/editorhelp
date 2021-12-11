@@ -5,10 +5,6 @@ const { checkTexts } = require('yandex-speller');
 export class SpellCheck {
 
     async checkTexts(texts: string[]): Promise<SpellCheckError[][]> {
-        return await this.checkTextBatch(texts);
-    }
-
-    private async checkTextBatch(texts: string[]): Promise<SpellCheckError[][]> {
         return new Promise((res, rej) => {
             checkTexts(texts, (err?: any, result?: any) => {
                 if (err) {

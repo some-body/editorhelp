@@ -11,15 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const edit_controller_1 = require("./controllers/edit-controller");
 const errors_1 = require("./errors");
-const spell_check_applyer_1 = require("./services/spell-check-applyer");
 const spellcheck_1 = require("./services/spellcheck");
 const express = require('express');
 const cors = require('cors');
 const serverless = require('serverless-http');
 const app = express();
 const spellCheck = new spellcheck_1.SpellCheck();
-const spellCheckApplyer = new spell_check_applyer_1.SpellCheckApplyer();
-const controllers = [new edit_controller_1.EditController(spellCheck, spellCheckApplyer)];
+const controllers = [new edit_controller_1.EditController(spellCheck)];
 app.use(cors({
     origin: 'null',
 }));

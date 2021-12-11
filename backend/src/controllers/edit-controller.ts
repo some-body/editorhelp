@@ -1,20 +1,17 @@
 import { Request, Response } from "express";
-import { SpellCheckApplyer } from "../services/spell-check-applyer";
 import { SpellCheck } from "../services/spellcheck";
 import { ApiController } from "./api-controller";
 import { parseEditInputDto } from "./dto/edit-input-dto";
-import { EditOutputDto } from "./dto/edit-output-dto";
+import { EditError, EditResultDto, Suggest, TextEditResult } from "./dto/edit-result-dto";
 
 export class EditController extends ApiController {
 
     private spellCheck: SpellCheck;
-    private spellCheckApplyer: SpellCheckApplyer;
 
-    constructor(spellCheck: SpellCheck, spellCheckApplyer: SpellCheckApplyer) {
+    constructor(spellCheck: SpellCheck) {
         super("/edit");
 
         this.spellCheck = spellCheck;
-        this.spellCheckApplyer = spellCheckApplyer;
     }
 
     override async post (req: Request, res: Response): Promise<void> {
@@ -24,11 +21,22 @@ export class EditController extends ApiController {
             return;
         }
 
-        const checkResult = await this.spellCheck.checkTexts(input.texts);
+        const checkResults = await this.spellCheck.checkTexts(input.texts);
 
-        const editedTexts = this.spellCheckApplyer.applySpellCheckResult(input.texts, checkResult);
-
-        const output: EditOutputDto = { editedTexts };
+        const output: EditResultDto = {
+            textEditResults: checkResults.map((checkRes): TextEditResult => ({
+                errors: checkRes.map((err): EditError => ({
+                    pos: err.pos,
+                    len: err.len,
+                    code: 'SPELLING_ERROR',
+                    title: 'Ошибка (наверное)',
+                    suggests: err.s.map((yaSuggest): Suggest => ({
+                        title: yaSuggest,
+                        value: yaSuggest,
+                    })),
+                })),
+            })),
+        };
         res.send(output)
     }
 }

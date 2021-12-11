@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { EditResultDto } from '../../entities/EditResultDto';
 import { Backend } from '../../services/backend';
 import { Editor } from '../../services/Editor';
-import { EditResult } from '../edit-result/EditResult';
+import { EditResultPage } from '../edit-result/EditResultPage';
 import './App.css';
 import { AppProps } from './AppProps';
 
@@ -39,7 +39,7 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
     }
 
     if (editResult) {
-        return renderApp(<EditResult editResult={editResult} />);
+        return renderApp(<EditResultPage editResult={editResult} />);
     }
 
     return renderApp(<>

@@ -2,7 +2,6 @@ import { Application, Request, Response } from "express";
 import { ApiController } from "./controllers/api-controller";
 import { EditController } from "./controllers/edit-controller";
 import { HttpException } from "./errors";
-import { SpellCheckApplyer } from "./services/spell-check-applyer";
 import { SpellCheck } from "./services/spellcheck";
 
 const express = require('express');
@@ -12,9 +11,8 @@ const serverless = require('serverless-http');
 const app: Application = express();
 
 const spellCheck = new SpellCheck();
-const spellCheckApplyer = new SpellCheckApplyer();
 
-const controllers: ApiController[] = [new EditController(spellCheck, spellCheckApplyer)];
+const controllers: ApiController[] = [new EditController(spellCheck)];
 
 app.use(cors({
     origin: 'null',
