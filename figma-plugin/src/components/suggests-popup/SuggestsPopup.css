@@ -1,0 +1,17 @@
+.suggests-container {
+    position: absolute;
+    min-width: 100%;
+    top: 1.2em;
+    color: var(--text-contrast-color);
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background: #6f6f6f;
+}
+
+.suggest {
+    padding: 3px 5px;
+}
+
+.suggest:hover {
+    background: #6fb861;
+}

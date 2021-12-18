@@ -1,0 +1,20 @@
+.token {
+    font-size: var(--text-size-m);
+    outline: none;
+}
+
+.token_type_error {
+    position: relative;
+    display: inline-block;
+    background: rgba(255, 0, 0, 0.25);
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+/* .token_type_error:hover {
+    background: rgba(255, 0, 0, 0.6);
+} */
+
+.token_type_error.hovered {
+    background: rgba(255, 0, 0, 0.6);
+}

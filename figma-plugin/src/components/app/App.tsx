@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
+import { EditResult } from '../../entities/EditResult';
 import { EditResultDto } from '../../entities/EditResultDto';
 import { Backend } from '../../services/backend';
 import { Editor } from '../../services/Editor';
-import { EditResultPage } from '../edit-result/EditResultPage';
+import { EditResultPage } from '../edit-result-page/EditResultPage';
 import './App.css';
 import { AppProps } from './AppProps';
 
@@ -13,7 +14,7 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<Error>();
-    const [editResult, setEditResult] = useState<EditResultDto>();
+    const [editResult, setEditResult] = useState<EditResult>();
 
     const sendEditRequest = useCallback(async () => {
         setIsLoading(true);

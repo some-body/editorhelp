@@ -1,23 +1,14 @@
 import { TextEditResult } from "../entities/EditResult";
-import { EditError } from "../entities/EditResultDto";
+import { EditError, Suggest } from "../entities/EditResultDto";
 
-export enum TokenType { GroupError, Text, Error }
+export enum TokenType { Group, Text, Error }
 
 export interface Token {
     type: TokenType;
 }
 
-export class GroupErrorToken implements Token {
-    type: TokenType.GroupError;
-    tokens: Token[];
-
-    constructor (tokens: Token[]) {
-        this.tokens = tokens;
-    }
-}
-
 export class TextToken implements Token {
-    type: TokenType.Text;
+    type = TokenType.Text;
     text: string;
 
     constructor (text: string) {
@@ -25,12 +16,30 @@ export class TextToken implements Token {
     }
 }
 
-export class ErrorToken implements Token {
-    type: TokenType.Error;
-    text: string;
+export class TokenError {
+    errorCode: string;
+    suggests: Suggest[];
 
-    constructor (text: string) {
-        this.text = text;
+    constructor (
+        errorCode: string,
+        suggests: Suggest[] = [],
+    ) {
+        this.errorCode = errorCode;
+        this.suggests = suggests;
+    }
+}
+
+export class GroupToken implements Token {
+    type = TokenType.Group;
+    tokens: Token[];
+    error?: TokenError;
+
+    constructor (
+        tokens: Token[],
+        error: TokenError | undefined = undefined,
+    ) {
+        this.tokens = tokens;
+        this.error = error;
     }
 }
 
@@ -53,34 +62,20 @@ export class Tokenizator {
         return tokensInRange;
     }
 
-    // 'Hello, inner_error, Peter' – length 25
-    // [2, 20], [6, 11] -> He[llo, [inner_error], Pete]r
-    // [2, 5], [6, 11] -> He[llo [inner_error]] Peter
     private tokenizeRange(text: string, start: number, end: number, errors: EditError[]): TokenizationResult {
         const tokens: Token[] = [];
 
-        const firstInnerError = errors.find((err) => err.pos < end);
-        const textUntil = firstInnerError 
-            ? firstInnerError.pos
-            : end;
-
-        if (textUntil > start) {
-            const textToToken = text.substring(start, textUntil);
-            tokens.push(new TextToken(textToToken));
-        }
-
-        let currPosition = textUntil;
-        
-        if (currPosition >= end) {
-            return { 
-                tokensInRange: tokens, 
-                realRangeEnd: currPosition,
-            };
-        }
+        let currPosition = start;
 
         let errorsLeft = [...errors];
         while (errorsLeft.length > 0) {
             const currError = errorsLeft[0];
+
+            if (currPosition < currError.pos) {
+                const textToToken = text.substring(currPosition, currError.pos);
+                tokens.push(new TextToken(textToToken));
+                currPosition = currError.pos;
+            }
 
             const errEnd = currError.pos + currError.len;
             const nextErrors = errorsLeft.slice(1);
@@ -88,13 +83,15 @@ export class Tokenizator {
 
             if (hasInnerErrors) {
                 const { tokensInRange, realRangeEnd } = this.tokenizeRange(text, currError.pos, errEnd, nextErrors);
-                tokens.push(new GroupErrorToken(tokensInRange));
+                const tokenError = new TokenError(currError.code, currError.suggests);
+                tokens.push(new GroupToken(tokensInRange, tokenError));
 
                 currPosition = realRangeEnd;
                 errorsLeft = errorsLeft.filter((err) => err.pos > realRangeEnd)
             } else {
                 const textToToken = text.substring(currError.pos, errEnd);
-                tokens.push(new ErrorToken(textToToken));
+                const tokenError = new TokenError(currError.code, currError.suggests);
+                tokens.push(new GroupToken([new TextToken(textToToken)], tokenError));
                 currPosition = errEnd;
                 errorsLeft = [...nextErrors];
             }

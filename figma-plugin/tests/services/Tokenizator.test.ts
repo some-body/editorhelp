@@ -1,6 +1,9 @@
 import { TextEditResult } from "../../src/entities/EditResult";
 import { EditError } from "../../src/entities/EditResultDto";
-import { ErrorToken, GroupErrorToken, TextToken, Tokenizator } from "../../src/services/Tokenizator";
+import { GroupToken, TextToken, Token, TokenError, Tokenizator } from "../../src/services/Tokenizator";
+
+const ERROR_CODE = 'code';
+const tokenError = new TokenError(ERROR_CODE);
 
 describe('Tokenizator', () => {
 
@@ -31,9 +34,9 @@ describe('Tokenizator', () => {
 
         const expected = [
             new TextToken('He'),
-            new GroupErrorToken([
+            groupToken([
                 new TextToken('llo '), 
-                new ErrorToken('inner_error'),
+                errorToken('inner_error'),
                 new TextToken(' Pete'), 
             ]),
             new TextToken('r'),
@@ -53,9 +56,9 @@ describe('Tokenizator', () => {
 
         const expected = [
             new TextToken('He'),
-            new GroupErrorToken([
+            groupToken([
                 new TextToken('llo '), 
-                new ErrorToken('inner_error'),
+                errorToken('inner_error'),
             ]),
             new TextToken(' Peter'),
         ];
@@ -73,11 +76,28 @@ describe('Tokenizator', () => {
         const result = underTest.tokenize(editResult);
 
         const expected = [
-            new GroupErrorToken([
+            groupToken([
                 new TextToken('H'),
-                new ErrorToken('el'),
+                errorToken('el'),
             ]),
             new TextToken('lo'),
+        ];
+        expect(result).toEqual(expected);
+    });
+
+    it('should return text between errors', () => {
+        const text = 'Hello text Peter';
+        const editResult: TextEditResult = {
+            errors: [getError(0, 5), getError(11, 5)],
+            originalText: text,
+        };
+
+        const result = underTest.tokenize(editResult);
+
+        const expected = [
+            errorToken('Hello'),
+            new TextToken(' text '),
+            errorToken('Peter'),
         ];
         expect(result).toEqual(expected);
     });
@@ -97,5 +117,13 @@ describe('Tokenizator', () => {
 });
 
 function getError(pos: number, len: number = 0): EditError {
-    return { pos, len, code: 'code', suggests: [{ title: 'title', value: 'value' }] };
+    return { pos, len, code: ERROR_CODE, suggests: [] };
+}
+
+function errorToken(text: string): GroupToken {
+    return new GroupToken([new TextToken(text)], tokenError);
+}
+
+function groupToken(tokens: Token[]): GroupToken {
+    return new GroupToken(tokens, tokenError);
 }
