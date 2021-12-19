@@ -1,10 +1,15 @@
 import React from 'react';
 import { GroupToken, TextToken, Token, TokenType } from '../../services/Tokenizator';
 import { GroupTokenComponentProps, TextTokenComponentProps } from './TokenComponentProps';
+import ReactDOMServer from 'react-dom/server';
 import './TokenComponent.css';
 
 export const ERROR_CLASS = 'token_type_error';
 export const ERROR_DATA_ATTR = 'data-error';
+
+export function groupTokenComponentToString (token: GroupToken): string {
+    return ReactDOMServer.renderToString(<GroupTokenComponent token={token} />);
+}
 
 export function TextTokenComponent (
     { token }: TextTokenComponentProps,

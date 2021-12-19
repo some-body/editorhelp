@@ -2,7 +2,7 @@ import React, { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { GroupToken, TextToken, TokenError, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import './EditResultComponent.css';
-import { ERROR_CLASS, ERROR_DATA_ATTR, GroupTokenComponent, TextTokenComponent } from '../token/TokenComponent';
+import { ERROR_CLASS, ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
 import { useMutations } from '../../hooks/use-mutations';
 
 const tokenizator = new Tokenizator();
@@ -55,6 +55,9 @@ export function EditResultComponent (
         new TextToken(', I am Doc'),
     ];
 
+    const textHtml = groupTokenComponentToString(new GroupToken(origTokens));
+    const htmlValueRef = useRef(textHtml);
+    
     const ref = useRef<HTMLPreElement>(null);
 
     useMutations(ref, (node) => removeErrorForAllParents(ref.current, node));
@@ -73,9 +76,8 @@ export function EditResultComponent (
                 ref={ref} 
                 onMouseMove={onMouseMove}
                 onMouseLeave={removeHovers}
-            >
-                <GroupTokenComponent token={new GroupToken(origTokens)} />
-            </pre>
+                dangerouslySetInnerHTML={{ __html: htmlValueRef.current }}
+            />
 
             <div className="edit-result__buttons-bar">
                 <button>Применить</button>
