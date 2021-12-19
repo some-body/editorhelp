@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { FormEvent, useCallback, useEffect, useRef } from 'react';
 import { GroupToken, TextToken, TokenError, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import './EditResultComponent.css';
-import { GroupTokenComponent, TextTokenComponent } from '../token/TokenComponent';
+import { ERROR_CLASS, ERROR_DATA_ATTR, GroupTokenComponent, TextTokenComponent } from '../token/TokenComponent';
+import { useMutations } from '../../hooks/use-mutations';
 
 const tokenizator = new Tokenizator();
+
+const HOVERED_CLASS = 'hovered';
+
+function removeErrorForAllParents(root: HTMLElement, node: HTMLElement) {
+    if (node === root) {
+        return;
+    }
+
+    node.classList.remove(ERROR_CLASS);
+    node.removeAttribute(ERROR_DATA_ATTR);
+
+    removeErrorForAllParents(root, node.parentElement);
+}
+
+function addHoverToNearestError (root: HTMLElement, node: HTMLElement) {
+    if (node === root) {
+        return;
+    }
+
+    if (node.classList.contains(ERROR_CLASS)) {
+        node.classList.add(HOVERED_CLASS);
+        return;
+    }
+
+    addHoverToNearestError(root, node.parentElement);
+}
+
+function removeHoverClasses (root: HTMLElement) {
+    root.querySelectorAll(`.${HOVERED_CLASS}`)
+        .forEach((el) => el.classList.remove(HOVERED_CLASS));
+}
 
 export function EditResultComponent (
     { editResult, onNextClick }: EditResultComponentProps,
@@ -23,12 +55,26 @@ export function EditResultComponent (
         new TextToken(', I am Doc'),
     ];
 
-    const root = new GroupToken(origTokens);
+    const ref = useRef<HTMLPreElement>(null);
+
+    useMutations(ref, (node) => removeErrorForAllParents(ref.current, node));
+
+    const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
+
+    const onMouseMove = useCallback((e: FormEvent<HTMLSpanElement>) => {
+        removeHoverClasses(ref.current);
+        addHoverToNearestError(ref.current, e.target as HTMLSpanElement);
+    }, [ref]);
 
     return (
         <div className="edit-result">
-            <pre className="edit-result__text">
-                <GroupTokenComponent token={root} />
+            <pre contentEditable
+                className="edit-result__text"  
+                ref={ref} 
+                onMouseMove={onMouseMove}
+                onMouseLeave={removeHovers}
+            >
+                <GroupTokenComponent token={new GroupToken(origTokens)} />
             </pre>
 
             <div className="edit-result__buttons-bar">
