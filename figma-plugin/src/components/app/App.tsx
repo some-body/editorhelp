@@ -45,7 +45,7 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
 
     return renderApp(<>
         <div>Сейчас я вам тут все почистию</div>
-        <button onClick={sendEditRequest}>Почистить</button>
+        <button className="app__start-btn" onClick={sendEditRequest}>Почистить</button>
     </>)
 }
 
