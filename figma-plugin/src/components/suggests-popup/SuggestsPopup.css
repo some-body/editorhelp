@@ -1,7 +1,5 @@
 .suggests-container {
     position: absolute;
-    min-width: 100%;
-    top: 1.2em;
     color: var(--text-contrast-color);
     border-radius: 3px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -10,6 +8,7 @@
 
 .suggest {
     padding: 3px 5px;
+    cursor: pointer;
 }
 
 .suggest:hover {

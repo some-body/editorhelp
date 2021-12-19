@@ -2,20 +2,30 @@ import React, { useEffect, useRef } from 'react';
 import { Suggest } from "../../entities/EditResultDto";
 import './SuggestsPopup.css';
 
+interface Position {
+    top: number;
+    left: number;
+}
+
 interface SuggestsPopupProps {
     suggests: Suggest[];
     onClickOutside: () => void;
     onSuggestClick: (suggest: Suggest) => void;
+    position: Position;
 }
 
 export function SuggestsPopup (
-    { suggests, onClickOutside, onSuggestClick }: SuggestsPopupProps,
+    { suggests, onClickOutside, onSuggestClick, position }: SuggestsPopupProps,
 ): JSX.Element {
     const suggestRef = useRef(null);
     useOnClickOutside(suggestRef, onClickOutside);
 
     return (
-        <div className="suggests-container" ref={suggestRef} contentEditable="false">
+        <div 
+            className="suggests-container" 
+            ref={suggestRef} 
+            style={{ top: position.top, left: position.left }}
+        >
             {suggests.map((s) => (
                 <div 
                     className="suggest" 

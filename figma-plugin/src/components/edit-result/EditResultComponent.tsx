@@ -1,42 +1,14 @@
-import React, { FormEvent, useCallback, useEffect, useRef } from 'react';
+import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { GroupToken, TextToken, TokenError, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
-import './EditResultComponent.css';
-import { ERROR_CLASS, ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
+import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
 import { useMutations } from '../../hooks/use-mutations';
+import { addHoverToNearestError, getNearestParentError, removeErrorForAllParents, removeHoverClasses } from './token-elements-operations';
+import './EditResultComponent.css';
+import { SuggestsPopup } from '../suggests-popup/SuggestsPopup';
+import { Suggest } from '../../entities/EditResultDto';
 
 const tokenizator = new Tokenizator();
-
-const HOVERED_CLASS = 'hovered';
-
-function removeErrorForAllParents(root: HTMLElement, node: HTMLElement) {
-    if (node === root) {
-        return;
-    }
-
-    node.classList.remove(ERROR_CLASS);
-    node.removeAttribute(ERROR_DATA_ATTR);
-
-    removeErrorForAllParents(root, node.parentElement);
-}
-
-function addHoverToNearestError (root: HTMLElement, node: HTMLElement) {
-    if (node === root) {
-        return;
-    }
-
-    if (node.classList.contains(ERROR_CLASS)) {
-        node.classList.add(HOVERED_CLASS);
-        return;
-    }
-
-    addHoverToNearestError(root, node.parentElement);
-}
-
-function removeHoverClasses (root: HTMLElement) {
-    root.querySelectorAll(`.${HOVERED_CLASS}`)
-        .forEach((el) => el.classList.remove(HOVERED_CLASS));
-}
 
 export function EditResultComponent (
     { editResult, onNextClick }: EditResultComponentProps,
@@ -52,7 +24,10 @@ export function EditResultComponent (
                 new TextToken('Peter'),
             ], new TokenError('error2', [{ title: 'Potter', value: 'Potter' }, { title: 'Parker', value: 'Parker' }])),
         ], new TokenError('error1', [{ title: 'Hey Buddy', value: 'Hey Buddy' }, { title: 'HELL NO', value: 'HELL NO' }])),
-        new TextToken(', I am Doc'),
+        new TextToken(', I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc'),
+        new GroupToken([
+            new TextToken(' HEYYYYY'),
+        ], new TokenError('error2', [{ title: 'Potter', value: 'Potter' }, { title: 'Parker', value: 'Parker' }]))
     ];
 
     const textHtml = groupTokenComponentToString(new GroupToken(origTokens));
@@ -60,7 +35,12 @@ export function EditResultComponent (
     
     const ref = useRef<HTMLPreElement>(null);
 
-    useMutations(ref, (node) => removeErrorForAllParents(ref.current, node));
+    const [suggestTarget, setSuggestTarget] = useState<HTMLElement>(undefined);
+
+    useMutations(ref, (node) => {
+        setSuggestTarget(undefined);
+        removeErrorForAllParents(ref.current, node);
+    });
 
     const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
 
@@ -69,6 +49,20 @@ export function EditResultComponent (
         addHoverToNearestError(ref.current, e.target as HTMLSpanElement);
     }, [ref]);
 
+
+    const onClick = (e) => {
+        const errNode = getNearestParentError(ref.current, e.target);
+        setSuggestTarget(errNode);
+    };
+
+    const onSuggestClick = (s: Suggest) => {
+        suggestTarget.textContent = s.value;
+        removeErrorForAllParents(ref.current, suggestTarget);
+        setSuggestTarget(undefined);
+    };
+
+    const onClickOutside = () => setSuggestTarget(undefined);
+
     return (
         <div className="edit-result">
             <pre contentEditable
@@ -76,13 +70,46 @@ export function EditResultComponent (
                 ref={ref} 
                 onMouseMove={onMouseMove}
                 onMouseLeave={removeHovers}
+                onClick={onClick}
                 dangerouslySetInnerHTML={{ __html: htmlValueRef.current }}
             />
+
+            {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
             <div className="edit-result__buttons-bar">
                 <button>Применить</button>
                 <button>Пропустить</button>
             </div>
         </div>
+    );
+}
+
+function renderSuggest (
+    target: HTMLElement | undefined,
+    onSuggestClick: (Suggest) => void,
+    onClickOutside: () => void,
+): JSX.Element | undefined {
+
+    if (!target) {
+        return undefined;
+    }
+
+    const error = JSON.parse(target.getAttribute(ERROR_DATA_ATTR));
+    if (!error) {
+        return undefined;
+    }
+
+    const rect = target.getBoundingClientRect();
+
+    return (
+        <SuggestsPopup
+            suggests={error.suggests}
+            onSuggestClick={onSuggestClick}
+            onClickOutside={onClickOutside}
+            position={{ 
+                top: rect.y + rect.height, 
+                left: rect.x,
+            }}
+        />
     );
 }
