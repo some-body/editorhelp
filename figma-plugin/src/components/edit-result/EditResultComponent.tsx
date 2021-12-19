@@ -4,9 +4,9 @@ import { EditResultComponentProps } from './EditResultComponentProps';
 import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
 import { useMutations } from '../../hooks/use-mutations';
 import { addHoverToNearestError, getNearestParentError, removeErrorForAllParents, removeHoverClasses } from './token-elements-operations';
-import './EditResultComponent.css';
 import { SuggestsPopup } from '../suggests-popup/SuggestsPopup';
 import { Suggest } from '../../entities/EditResultDto';
+import './EditResultComponent.css';
 
 const tokenizator = new Tokenizator();
 
@@ -15,20 +15,7 @@ export function EditResultComponent (
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
-    // const origTokens = tokenizator.tokenize(editResult);
-
-    const origTokens = [
-        new GroupToken([
-            new TextToken('Hello '),
-            new GroupToken([
-                new TextToken('Peter'),
-            ], new TokenError('error2', [{ title: 'Potter', value: 'Potter' }, { title: 'Parker', value: 'Parker' }])),
-        ], new TokenError('error1', [{ title: 'Hey Buddy', value: 'Hey Buddy' }, { title: 'HELL NO', value: 'HELL NO' }])),
-        new TextToken(', I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc I am Doc'),
-        new GroupToken([
-            new TextToken(' HEYYYYY'),
-        ], new TokenError('error2', [{ title: 'Potter', value: 'Potter' }, { title: 'Parker', value: 'Parker' }]))
-    ];
+    const origTokens = tokenizator.tokenize(editResult);
 
     const textHtml = groupTokenComponentToString(new GroupToken(origTokens));
     const htmlValueRef = useRef(textHtml);
