@@ -1,5 +1,5 @@
 import { StartPluginMessage } from "../common/PluginMessage";
-import { EditResult } from "../entities/EditResult";
+import { EditResult, TextEditResult } from "../entities/EditResult";
 import { Backend } from "./backend";
 
 export class Editor {
@@ -19,7 +19,8 @@ export class Editor {
 
         return {
             textEditResults: dto.textEditResults
-                .map((res, i) => ({
+                .map((res, i): TextEditResult => ({
+                    node: editRequest.selectedNodes[i],
                     originalText: editRequest.selectedNodes[i].text,
                     errors: res.errors,
                 }))

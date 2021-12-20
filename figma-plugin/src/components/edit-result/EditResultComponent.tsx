@@ -11,7 +11,7 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, onNextClick }: EditResultComponentProps,
+    { editResult, onNextClick, onApplyClick }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
@@ -48,6 +48,10 @@ export function EditResultComponent (
 
     const onClickOutside = () => setSuggestTarget(undefined);
 
+    const onApply = useCallback(() => {
+        onApplyClick(editResult, ref.current.textContent);
+    }, [ref]);
+
     return (
         <div className="edit-result">
             <pre contentEditable
@@ -62,7 +66,7 @@ export function EditResultComponent (
             {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
             <div className="edit-result__buttons-bar">
-                <button>Применить</button>
+                <button onClick={onApply}>Применить</button>
                 <button onClick={onNextClick}>Пропустить</button>
             </div>
         </div>

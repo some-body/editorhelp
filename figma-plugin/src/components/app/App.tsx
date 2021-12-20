@@ -4,13 +4,16 @@ import { EditResultDto } from '../../entities/EditResultDto';
 import { Backend } from '../../services/backend';
 import { Editor } from '../../services/Editor';
 import { EditResultPage } from '../edit-result-page/EditResultPage';
+import { ApplyTextChangesHandler } from '../edit-result/EditResultComponentProps';
 import './App.css';
 import { AppProps } from './AppProps';
 
 const backend = new Backend();
 const editor = new Editor(backend);
 
-export function App ({startPluginMessage}: AppProps): JSX.Element {
+export function App (
+    { startPluginMessage: editRequest, onNodeEditResult }: AppProps,
+): JSX.Element {
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<Error>();
@@ -19,14 +22,14 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
     const sendEditRequest = useCallback(async () => {
         setIsLoading(true);
         try {
-            const result = await editor.getEditResult(startPluginMessage); 
+            const result = await editor.getEditResult(editRequest); 
             setEditResult(result);
         } catch (err) {
             setError(err);
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [editRequest, editor]);
 
     if (error) {
         return (<>
@@ -40,7 +43,7 @@ export function App ({startPluginMessage}: AppProps): JSX.Element {
     }
 
     if (editResult) {
-        return renderApp(<EditResultPage editResult={editResult} />);
+        return renderApp(<EditResultPage editResult={editResult} onApplyTextChanges={onNodeEditResult} />);
     }
 
     return renderApp(<>

@@ -1,9 +1,12 @@
+import { NodeDto } from "../../src/common/PluginMessage";
 import { TextEditResult } from "../../src/entities/EditResult";
 import { EditError } from "../../src/entities/EditResultDto";
 import { GroupToken, TextToken, Token, TokenError, Tokenizator } from "../../src/services/Tokenizator";
 
 const ERROR_CODE = 'code';
 const tokenError = new TokenError(ERROR_CODE);
+
+const node: NodeDto = { nodeId: '123', text: '321' };
 
 describe('Tokenizator', () => {
 
@@ -15,6 +18,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: origErrors,
             originalText: 'Hello, Peter',
+            node,
         };
 
         underTest.tokenize(editResult);
@@ -28,6 +32,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: [getError(2, 20), getError(6, 11)],
             originalText: text,
+            node,
         };
 
         const result = underTest.tokenize(editResult);
@@ -50,6 +55,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: [getError(2, 5), getError(6, 11)],
             originalText: text,
+            node,
         };
 
         const result = underTest.tokenize(editResult);
@@ -71,6 +77,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: [getError(0, 2), getError(1, 2)],
             originalText: text,
+            node,
         };
 
         const result = underTest.tokenize(editResult);
@@ -90,6 +97,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: [getError(0, 5), getError(11, 5)],
             originalText: text,
+            node,
         };
 
         const result = underTest.tokenize(editResult);
@@ -107,6 +115,7 @@ describe('Tokenizator', () => {
         const editResult: TextEditResult = {
             errors: [],
             originalText: 'Hello, Peter',
+            node,
         };
 
         const result = underTest.tokenize(editResult);
