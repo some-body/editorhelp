@@ -11,7 +11,7 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, onNextClick, onApplyClick }: EditResultComponentProps,
+    { editResult, onUpdate }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
@@ -26,6 +26,7 @@ export function EditResultComponent (
     useMutations(ref, (node) => {
         setSuggestTarget(undefined);
         removeErrorForAllParents(ref.current, node);
+        onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
     });
 
     const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
@@ -48,10 +49,6 @@ export function EditResultComponent (
 
     const onClickOutside = () => setSuggestTarget(undefined);
 
-    const onApply = useCallback(() => {
-        onApplyClick(editResult, ref.current.textContent);
-    }, [ref]);
-
     return (
         <div className="edit-result">
             <pre contentEditable
@@ -64,11 +61,6 @@ export function EditResultComponent (
             />
 
             {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
-
-            <div className="edit-result__buttons-bar">
-                <button onClick={onApply}>Применить</button>
-                <button onClick={onNextClick}>Пропустить</button>
-            </div>
         </div>
     );
 }

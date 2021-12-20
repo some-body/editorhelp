@@ -1,12 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { EditResult } from '../../entities/EditResult';
-import { EditResultDto } from '../../entities/EditResultDto';
 import { Backend } from '../../services/backend';
 import { Editor } from '../../services/Editor';
 import { EditResultPage } from '../edit-result-page/EditResultPage';
-import { ApplyTextChangesHandler } from '../edit-result/EditResultComponentProps';
-import './App.css';
 import { AppProps } from './AppProps';
+import './App.css';
 
 const backend = new Backend();
 const editor = new Editor(backend);
