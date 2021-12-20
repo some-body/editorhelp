@@ -12,8 +12,7 @@ export function useMutations(ref: any, handler: (element: HTMLElement) => void) 
         observer.observe(ref.current, {
             subtree: true,
             characterData: true,
-            childList: true,
-            characterDataOldValue: true,
+            // childList: true,
         });
 
         return () => {

@@ -9,5 +9,6 @@ export interface EditState {
 
 export interface EditResultComponentProps {
     editResult: TextEditResult;
+    initHtml?: string;
     onUpdate: (state: EditState) => void;
 }

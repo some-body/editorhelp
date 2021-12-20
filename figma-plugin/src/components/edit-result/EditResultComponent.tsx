@@ -11,13 +11,15 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, onUpdate }: EditResultComponentProps,
+    { editResult, initHtml, onUpdate }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
     const origTokens = useMemo(() => tokenizator.tokenize(editResult), [editResult]);
 
-    const textHtml = useMemo(() => groupTokenComponentToString(new GroupToken(origTokens)), [origTokens]);
+    const textHtml = useMemo(() => {
+        return initHtml || groupTokenComponentToString(new GroupToken(origTokens));
+    }, [origTokens, initHtml]);
 
     const ref = useRef<HTMLPreElement>(null);
 
@@ -45,6 +47,7 @@ export function EditResultComponent (
         suggestTarget.textContent = s.value;
         removeErrorForAllParents(ref.current, suggestTarget);
         setSuggestTarget(undefined);
+        onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
     }, [ref, suggestTarget]);
 
     const onClickOutside = () => setSuggestTarget(undefined);
