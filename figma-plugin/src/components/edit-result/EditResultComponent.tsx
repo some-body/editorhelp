@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { GroupToken, TextToken, TokenError, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
@@ -15,11 +15,10 @@ export function EditResultComponent (
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
-    const origTokens = tokenizator.tokenize(editResult);
+    const origTokens = useMemo(() => tokenizator.tokenize(editResult), [editResult]);
 
-    const textHtml = groupTokenComponentToString(new GroupToken(origTokens));
-    const htmlValueRef = useRef(textHtml);
-    
+    const textHtml = useMemo(() => groupTokenComponentToString(new GroupToken(origTokens)), [origTokens]);
+
     const ref = useRef<HTMLPreElement>(null);
 
     const [suggestTarget, setSuggestTarget] = useState<HTMLElement>(undefined);
@@ -36,17 +35,16 @@ export function EditResultComponent (
         addHoverToNearestError(ref.current, e.target as HTMLSpanElement);
     }, [ref]);
 
-
-    const onClick = (e) => {
+    const onClick = useCallback((e) => {
         const errNode = getNearestParentError(ref.current, e.target);
         setSuggestTarget(errNode);
-    };
+    }, [ref]);
 
-    const onSuggestClick = (s: Suggest) => {
+    const onSuggestClick = useCallback((s: Suggest) => {
         suggestTarget.textContent = s.value;
         removeErrorForAllParents(ref.current, suggestTarget);
         setSuggestTarget(undefined);
-    };
+    }, [ref, suggestTarget]);
 
     const onClickOutside = () => setSuggestTarget(undefined);
 
@@ -58,14 +56,14 @@ export function EditResultComponent (
                 onMouseMove={onMouseMove}
                 onMouseLeave={removeHovers}
                 onClick={onClick}
-                dangerouslySetInnerHTML={{ __html: htmlValueRef.current }}
+                dangerouslySetInnerHTML={{ __html: textHtml }}
             />
 
             {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
             <div className="edit-result__buttons-bar">
                 <button>Применить</button>
-                <button>Пропустить</button>
+                <button onClick={onNextClick}>Пропустить</button>
             </div>
         </div>
     );
