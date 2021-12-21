@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function useMutations(ref: any, handler: (element: HTMLElement) => void) {
+export function useMutations(ref: any, handler: (element: HTMLElement) => void, deps: any[]) {
     useEffect(() => {
         const observer = new MutationObserver((e: any) => {
             e.forEach(event => {
@@ -18,5 +18,5 @@ export function useMutations(ref: any, handler: (element: HTMLElement) => void) 
         return () => {
             observer.disconnect();
         };
-    }, [ref, handler]);
+    }, [ref, handler, ...deps]);
 }

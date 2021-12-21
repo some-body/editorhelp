@@ -1,14 +1,17 @@
 import { TextEditResult } from "../../entities/EditResult";
 
-export type ApplyTextChangesHandler = (editResult: TextEditResult, text: string) => void;
-
 export interface EditState {
     html: string;
     text: string;
 }
 
+export type StateChangeHandler = (state: EditState) => void;
+
 export interface EditResultComponentProps {
     editResult: TextEditResult;
-    initHtml?: string;
-    onUpdate: (state: EditState) => void;
+    initState?: EditState;
+    onUpdate: StateChangeHandler;
+    onApply: () => void;
+    onNext: () => void;
+    onPrev: () => void;
 }

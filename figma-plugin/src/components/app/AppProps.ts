@@ -1,5 +1,5 @@
 import { StartPluginMessage } from "../../common/PluginMessage";
-import { ApplyTextChangesHandler } from "../edit-result/EditResultComponentProps";
+import { ApplyTextChangesHandler } from "../edit-result-page/EditResultPageProps";
 
 export interface AppProps {
     startPluginMessage: StartPluginMessage;

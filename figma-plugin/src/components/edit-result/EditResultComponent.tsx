@@ -1,5 +1,5 @@
-import React, { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { GroupToken, TextToken, TokenError, Tokenizator } from '../../services/Tokenizator';
+import React, { FormEvent, useCallback, useMemo, useRef, useState } from 'react';
+import { GroupToken, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
 import { useMutations } from '../../hooks/use-mutations';
@@ -11,15 +11,15 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, initHtml, onUpdate }: EditResultComponentProps,
+    { editResult, onUpdate, onApply, onNext, onPrev, initState }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
     const origTokens = useMemo(() => tokenizator.tokenize(editResult), [editResult]);
 
     const textHtml = useMemo(() => {
-        return initHtml || groupTokenComponentToString(new GroupToken(origTokens));
-    }, [origTokens, initHtml]);
+        return initState?.html || groupTokenComponentToString(new GroupToken(origTokens));
+    }, [origTokens, initState?.html]);
 
     const ref = useRef<HTMLPreElement>(null);
 
@@ -29,7 +29,7 @@ export function EditResultComponent (
         setSuggestTarget(undefined);
         removeErrorForAllParents(ref.current, node);
         onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
-    });
+    }, [onUpdate]);
 
     const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
 
@@ -48,9 +48,14 @@ export function EditResultComponent (
         removeErrorForAllParents(ref.current, suggestTarget);
         setSuggestTarget(undefined);
         onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
-    }, [ref, suggestTarget]);
+    }, [ref, suggestTarget, onUpdate]);
 
-    const onClickOutside = () => setSuggestTarget(undefined);
+    const onClickOutside = useCallback(() => setSuggestTarget(undefined), []);
+
+    const onCleanupClick = useCallback(() => {
+        ref.current.innerHTML = groupTokenComponentToString(new GroupToken(origTokens));
+        onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
+    }, [ref, origTokens]);
 
     return (
         <div className="edit-result">
@@ -64,6 +69,13 @@ export function EditResultComponent (
             />
 
             {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
+
+            <div className="edit-result-page__buttons-bar">
+                <button onClick={onPrev}>Предыдущий</button>
+                <button onClick={onCleanupClick}>Сбросить</button>
+                <button onClick={onApply}>Применить</button>
+                <button onClick={onNext}>Следующий</button>
+            </div>
         </div>
     );
 }
