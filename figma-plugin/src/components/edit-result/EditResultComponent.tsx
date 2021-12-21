@@ -19,7 +19,7 @@ export function EditResultComponent (
 
     const textHtml = useMemo(() => {
         return initState?.html || groupTokenComponentToString(new GroupToken(origTokens));
-    }, [origTokens, initState?.html]);
+    }, [origTokens, editResult]);
 
     const ref = useRef<HTMLPreElement>(null);
 

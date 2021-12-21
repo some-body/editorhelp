@@ -11,7 +11,6 @@ export function EditResultPage (
 
     const [resultIndex, setResultIndex] = useState<number>(0);
     const [editStates, setEditStates] = useState<Record<number, EditState>>({});
-    const [currInitState, setCurrInitState] = useState<EditState>(undefined);
 
     const update: StateChangeHandler = useCallback((editState: EditState) => {
         const newEditStates = { ...editStates };
@@ -31,7 +30,6 @@ export function EditResultPage (
 
         const newIndex = resultIndex - 1;
         setResultIndex(newIndex);
-        setCurrInitState(editStates[newIndex]);
     }, [resultIndex]);
 
     const showNext = useCallback(() => {
@@ -41,7 +39,6 @@ export function EditResultPage (
 
         const newIndex = resultIndex + 1;
         setResultIndex(newIndex);
-        setCurrInitState(editStates[newIndex]);
     }, [editResult, resultIndex]);
 
     const apply = useCallback(() => {
@@ -70,7 +67,7 @@ export function EditResultPage (
             ) : null}
             <EditResultComponent 
                 editResult={editResults[resultIndex]}
-                initState={currInitState}
+                initState={editStates[resultIndex]}
                 onUpdate={update}
                 onPrev={showPrev}
                 onNext={showNext}
