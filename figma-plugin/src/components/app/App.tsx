@@ -45,11 +45,13 @@ export function App (
     }
 
     return renderApp(<>
-        <div>Сейчас я вам тут все почистию</div>
-        <button className="app__start-btn" onClick={sendEditRequest}>Почистить</button>
+        <div className="app__startup">
+            <div>Сейчас я вам тут все почистию</div>
+            <button className="app__start-btn" onClick={sendEditRequest}>Почистить</button>
+        </div>
     </>)
 }
 
 function renderApp(content: JSX.Element) {
-    return <div className="app_root">{content}</div>
+    return <div className="app__root">{content}</div>
 }

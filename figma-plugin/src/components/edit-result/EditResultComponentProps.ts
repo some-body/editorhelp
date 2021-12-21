@@ -5,7 +5,7 @@ export interface EditState {
     text: string;
 }
 
-export type StateChangeHandler = (state: EditState) => void;
+export type StateChangeHandler = (state?: EditState) => void;
 
 export interface EditResultComponentProps {
     editResult: TextEditResult;

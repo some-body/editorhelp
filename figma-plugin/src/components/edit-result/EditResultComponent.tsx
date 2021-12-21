@@ -70,7 +70,7 @@ export function EditResultComponent (
 
             {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
-            <div className="edit-result-page__buttons-bar">
+            <div className="edit-result__buttons-bar">
                 <button onClick={onPrev}>Предыдущий</button>
                 <button onClick={onCleanupClick}>Сбросить</button>
                 <button onClick={onApply}>Применить</button>

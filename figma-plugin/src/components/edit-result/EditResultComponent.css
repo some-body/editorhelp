@@ -8,4 +8,10 @@
     padding: 1em;
     font-family: sans-serif;
     white-space: pre-wrap;
+    margin: 0;
+}
+
+.edit-result__buttons-bar {
+    text-align: center;
+    margin: 10px;
 }

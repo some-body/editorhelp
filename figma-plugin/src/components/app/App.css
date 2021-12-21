@@ -1,4 +1,4 @@
-.app_root {
+.app__root {
     --text-color: #000;
     --text-contrast-color: #fff;
     --secondary-color: #bbb;
@@ -6,15 +6,19 @@
 
     --gap-m: 16px;
 
+    --text-size-s: 14px;
     --text-size-m: 16px;
 
     font: var(--text-size-m) sans-serif;
     font-family: sans-serif;
     color: var(--text-color);
-    text-align: center;
     margin: 20px;
 }
 
 .app__start-btn {
     margin-top: var(--gap-m);
+}
+
+.app__startup {
+    text-align: center;
 }
