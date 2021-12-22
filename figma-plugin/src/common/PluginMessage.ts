@@ -5,9 +5,13 @@ export interface PluginMessageWrapper {
 export type PluginMessage = StartPluginMessage 
     | UpdateNodeTextMessage 
     | NavigateToNodePluginMessage 
+    | RequestSelectedNodesPluginMessage
+    | ResponseSelectedNodesPluginMessage
     | CloseMessage;
 
-export enum PluginMessageType { StartPlugin, UpdateNode, NavigateToNode, ClosePlugin }
+export enum PluginMessageType { 
+    StartPlugin, UpdateNode, NavigateToNode, RequestSelectedNodes, ResponseSelectedNodes, ClosePlugin,
+}
 
 interface PluginMessageBase {
     type: PluginMessageType;
@@ -15,6 +19,14 @@ interface PluginMessageBase {
 
 export interface StartPluginMessage extends PluginMessageBase {
     type: PluginMessageType.StartPlugin;
+}
+
+export interface RequestSelectedNodesPluginMessage extends PluginMessageBase {
+    type: PluginMessageType.RequestSelectedNodes;
+}
+
+export interface ResponseSelectedNodesPluginMessage extends PluginMessageBase {
+    type: PluginMessageType.ResponseSelectedNodes;
     selectedNodes: NodeDto[];
 }
 

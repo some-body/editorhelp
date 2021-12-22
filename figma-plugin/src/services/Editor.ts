@@ -1,4 +1,4 @@
-import { StartPluginMessage } from "../common/PluginMessage";
+import { NodeDto } from "../common/PluginMessage";
 import { EditResult, TextEditResult } from "../entities/EditResult";
 import { Backend } from "./backend";
 
@@ -10,9 +10,7 @@ export class Editor {
         this.backend = backend;
     }
 
-    async getEditResult(editRequest: StartPluginMessage): Promise<EditResult> {
-        const { selectedNodes } = editRequest;
-
+    async getEditResult(selectedNodes: NodeDto[]): Promise<EditResult> {
         const texts = selectedNodes.map((node) => node.text);
 
         const dto = await this.backend.edit(texts);
@@ -20,8 +18,8 @@ export class Editor {
         return {
             textEditResults: dto.textEditResults
                 .map((res, i): TextEditResult => ({
-                    node: editRequest.selectedNodes[i],
-                    originalText: editRequest.selectedNodes[i].text,
+                    node: selectedNodes[i],
+                    originalText: selectedNodes[i].text,
                     errors: res.errors,
                 }))
                 .filter((res) => res.errors.length > 0),

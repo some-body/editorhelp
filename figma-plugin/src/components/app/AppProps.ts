@@ -5,4 +5,5 @@ export interface AppProps {
     startPluginMessage: StartPluginMessage;
     onNodeEditResult: ApplyTextChangesHandler;
     navigateToNode: (nodeDto: NodeDto) => void;
+    getSelectedNodes: () => Promise<NodeDto[]>;
 }

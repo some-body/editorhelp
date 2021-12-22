@@ -10,7 +10,7 @@ const backend = new Backend();
 const editor = new Editor(backend);
 
 export function App (
-    { startPluginMessage: editRequest, onNodeEditResult, navigateToNode }: AppProps,
+    { onNodeEditResult, navigateToNode, getSelectedNodes }: AppProps,
 ): JSX.Element {
 
     const [isLoading, setIsLoading] = useState(false)
@@ -20,14 +20,15 @@ export function App (
     const sendEditRequest = useCallback(async () => {
         setIsLoading(true);
         try {
-            const result = await editor.getEditResult(editRequest); 
+            const selectedNodes = await getSelectedNodes();
+            const result = await editor.getEditResult(selectedNodes); 
             setEditResult(result);
         } catch (err) {
             setError(err);
         } finally {
             setIsLoading(false);
         }
-    }, [editRequest, editor]);
+    }, [getSelectedNodes, editor]);
 
     if (error) {
         return (<>

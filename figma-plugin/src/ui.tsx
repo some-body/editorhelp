@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/app/App';
-import { StartPluginMessage, PluginMessageType, PluginMessageWrapper, PluginMessage, UpdateNodeTextMessage, NodeDto, NavigateToNodePluginMessage } from './common/PluginMessage';
+import { StartPluginMessage, PluginMessageType, PluginMessageWrapper, PluginMessage, UpdateNodeTextMessage, NodeDto, NavigateToNodePluginMessage, RequestSelectedNodesPluginMessage } from './common/PluginMessage';
 import { TextEditResult } from './entities/EditResult';
 import './ui.css';
 
@@ -26,6 +26,23 @@ function navigateToNode (node: NodeDto) {
     sendMessage(msg);
 }
 
+function getSelectedNodes (): Promise<NodeDto[]> {
+    return new Promise((res) => {
+        window.addEventListener('message', (msgEvent: MessageEvent<PluginMessageWrapper>) => {
+            const msg = msgEvent.data.pluginMessage;
+            if (msg.type !== PluginMessageType.ResponseSelectedNodes) {
+                return;
+            }
+            res(msg.selectedNodes);
+        });
+        
+        const reqMsg: RequestSelectedNodesPluginMessage = {
+            type: PluginMessageType.RequestSelectedNodes,
+        };
+        sendMessage(reqMsg);
+    });
+}
+
 window.onmessage = (msgEvent: MessageEvent<PluginMessageWrapper>) => {
     const msg = msgEvent.data.pluginMessage;
 
@@ -36,10 +53,11 @@ window.onmessage = (msgEvent: MessageEvent<PluginMessageWrapper>) => {
                     startPluginMessage={msg as StartPluginMessage} 
                     onNodeEditResult={onNodeEditResult}
                     navigateToNode={navigateToNode}
+                    getSelectedNodes={getSelectedNodes}
                 />, 
                 document.getElementById('react-page'));
             break;
         default:
-            console.error(`Unknown msg type: ${msg.type}`);
+            // ignore.
     }
 };
