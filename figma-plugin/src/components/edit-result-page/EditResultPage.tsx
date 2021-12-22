@@ -58,16 +58,14 @@ export function EditResultPage (
     }, [onApplyTextChanges, resultIndex, editResult, editStates]);
 
     const editState = editStates[resultIndex];
-    const isChanged = editState && editState.text !== editResults[resultIndex].originalText;
+    const isModified = editState && editState.text !== editResults[resultIndex].originalText;
 
     return (
         <div className="edit-result-page">
-            { isChanged ? (
-                <div className="edit-result-page__change-indicator">Изменения не применены</div>
-            ) : null}
             <EditResultComponent 
                 editResult={editResults[resultIndex]}
                 initState={editStates[resultIndex]}
+                isModified={isModified}
                 onUpdate={update}
                 onPrev={showPrev}
                 onNext={showNext}

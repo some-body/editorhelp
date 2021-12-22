@@ -41,7 +41,11 @@ export function App (
     }
 
     if (editResult) {
-        return renderApp(<EditResultPage editResult={editResult} onApplyTextChanges={onNodeEditResult} />);
+        if (editResult.textEditResults.length > 0) {
+            return renderApp(<EditResultPage editResult={editResult} onApplyTextChanges={onNodeEditResult} />);
+        } else {
+            return renderApp(<>Не нашли ошибок</>);
+        }
     }
 
     return renderApp(<>

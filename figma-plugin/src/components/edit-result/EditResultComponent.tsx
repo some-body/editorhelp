@@ -11,7 +11,7 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, onUpdate, onApply, onNext, onPrev, initState }: EditResultComponentProps,
+    { editResult, onUpdate, onApply, onNext, onPrev, initState, isModified }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
@@ -57,6 +57,8 @@ export function EditResultComponent (
         onUpdate({ html: ref.current.innerHTML, text: ref.current.textContent });
     }, [ref, origTokens]);
 
+    const applyButtonClass = isModified ? 'click-me' : '';
+
     return (
         <div className="edit-result">
             <pre contentEditable
@@ -73,7 +75,7 @@ export function EditResultComponent (
             <div className="edit-result__buttons-bar">
                 <button onClick={onPrev}>Предыдущий</button>
                 <button onClick={onCleanupClick}>Сбросить</button>
-                <button onClick={onApply}>Применить</button>
+                <button className={applyButtonClass} onClick={onApply}>Применить</button>
                 <button onClick={onNext}>Следующий</button>
             </div>
         </div>

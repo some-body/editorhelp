@@ -2,7 +2,10 @@ import { getSelectedTextNodes } from "./get-selected-text-nodes";
 import { NodeDto, PluginMessageType, StartPluginMessage } from "../common/PluginMessage";
 
 export function startPlugin () {
-    const nodes = getSelectedTextNodes(figma.currentPage.selection);
+    const selection = figma.currentPage.selection;
+    const nodesToProcess = selection.length > 0 ? selection : figma.currentPage.children;
+
+    const nodes = getSelectedTextNodes(nodesToProcess);
 
     const nodeDtos = nodes.map((node): NodeDto => ({ 
         nodeId: node.id, 

@@ -1,12 +1,2 @@
 .edit-result-page {
-    position: relative;
-    top: 5px;
-}
-
-.edit-result-page__change-indicator {
-    position: absolute;
-    bottom: calc(100% + 5px);
-    color: var(--secondary-color);
-    font-size: var(--text-size-s);
-    margin-left: 5px;
 }
