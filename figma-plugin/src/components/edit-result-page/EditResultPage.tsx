@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { EditResultComponent } from '../edit-result/EditResultComponent';
 import { EditState, StateChangeHandler } from '../edit-result/EditResultComponentProps';
 import { EditResultPageProps } from './EditResultPageProps';
 import './EditResultPage.css';
 
 export function EditResultPage (
-    { editResult, onApplyTextChanges }: EditResultPageProps,
+    { editResult, onApplyTextChanges, navigateToNode }: EditResultPageProps,
 ): JSX.Element {
     const [editResults, setEditResults] = useState(editResult.textEditResults);
 
@@ -23,6 +23,10 @@ export function EditResultPage (
         setEditStates(newEditStates);
     }, [resultIndex, editStates]);
 
+    useEffect(() => {
+        navigateToNode(editResults[0].node);
+    }, []);
+
     const showPrev = useCallback(() => {
         if (resultIndex <= 0) {
             return;
@@ -30,6 +34,7 @@ export function EditResultPage (
 
         const newIndex = resultIndex - 1;
         setResultIndex(newIndex);
+        navigateToNode(editResults[newIndex].node);
     }, [resultIndex]);
 
     const showNext = useCallback(() => {
@@ -39,6 +44,7 @@ export function EditResultPage (
 
         const newIndex = resultIndex + 1;
         setResultIndex(newIndex);
+        navigateToNode(editResults[newIndex].node);
     }, [editResult, resultIndex]);
 
     const apply = useCallback(() => {

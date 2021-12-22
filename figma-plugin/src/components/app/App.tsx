@@ -10,7 +10,7 @@ const backend = new Backend();
 const editor = new Editor(backend);
 
 export function App (
-    { startPluginMessage: editRequest, onNodeEditResult }: AppProps,
+    { startPluginMessage: editRequest, onNodeEditResult, navigateToNode }: AppProps,
 ): JSX.Element {
 
     const [isLoading, setIsLoading] = useState(false)
@@ -42,7 +42,13 @@ export function App (
 
     if (editResult) {
         if (editResult.textEditResults.length > 0) {
-            return renderApp(<EditResultPage editResult={editResult} onApplyTextChanges={onNodeEditResult} />);
+            return renderApp(
+                <EditResultPage 
+                    editResult={editResult} 
+                    onApplyTextChanges={onNodeEditResult} 
+                    navigateToNode={navigateToNode}
+                />
+            );
         } else {
             return renderApp(<>Не нашли ошибок</>);
         }

@@ -5,6 +5,7 @@
     --accent-color: rgb(255, 0, 0);
 
     --gap-m: 16px;
+    --gap-s: 12px;
 
     --text-size-s: 14px;
     --text-size-m: 16px;
@@ -12,7 +13,7 @@
     font: var(--text-size-m) sans-serif;
     font-family: sans-serif;
     color: var(--text-color);
-    margin: 20px;
+    margin: 0px var(--gap-s);
 }
 
 .app__start-btn {

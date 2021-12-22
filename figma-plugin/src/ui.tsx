@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './components/app/App';
-import { StartPluginMessage, PluginMessageType, PluginMessageWrapper, PluginMessage, UpdateNodeTextMessage } from './common/PluginMessage';
+import { StartPluginMessage, PluginMessageType, PluginMessageWrapper, PluginMessage, UpdateNodeTextMessage, NodeDto, NavigateToNodePluginMessage } from './common/PluginMessage';
 import { TextEditResult } from './entities/EditResult';
 import './ui.css';
 
@@ -18,6 +18,14 @@ function onNodeEditResult (editResult: TextEditResult, text: string) {
     sendMessage(msg);
 }
 
+function navigateToNode (node: NodeDto) {
+    const msg: NavigateToNodePluginMessage = {
+        type: PluginMessageType.NavigateToNode,
+        node,
+    };
+    sendMessage(msg);
+}
+
 window.onmessage = (msgEvent: MessageEvent<PluginMessageWrapper>) => {
     const msg = msgEvent.data.pluginMessage;
 
@@ -27,6 +35,7 @@ window.onmessage = (msgEvent: MessageEvent<PluginMessageWrapper>) => {
                 <App 
                     startPluginMessage={msg as StartPluginMessage} 
                     onNodeEditResult={onNodeEditResult}
+                    navigateToNode={navigateToNode}
                 />, 
                 document.getElementById('react-page'));
             break;

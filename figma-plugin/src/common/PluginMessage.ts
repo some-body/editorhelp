@@ -2,9 +2,12 @@ export interface PluginMessageWrapper {
     pluginMessage: PluginMessage;
 }
 
-export type PluginMessage = StartPluginMessage | UpdateNodeTextMessage | CloseMessage;
+export type PluginMessage = StartPluginMessage 
+    | UpdateNodeTextMessage 
+    | NavigateToNodePluginMessage 
+    | CloseMessage;
 
-export enum PluginMessageType { StartPlugin, UpdateNode, ClosePlugin }
+export enum PluginMessageType { StartPlugin, UpdateNode, NavigateToNode, ClosePlugin }
 
 interface PluginMessageBase {
     type: PluginMessageType;
@@ -13,6 +16,11 @@ interface PluginMessageBase {
 export interface StartPluginMessage extends PluginMessageBase {
     type: PluginMessageType.StartPlugin;
     selectedNodes: NodeDto[];
+}
+
+export interface NavigateToNodePluginMessage extends PluginMessageBase {
+    type: PluginMessageType.NavigateToNode;
+    node: NodeDto;
 }
 
 export interface UpdateNodeTextMessage extends PluginMessageBase {

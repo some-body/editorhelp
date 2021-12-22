@@ -1,7 +1,8 @@
 import { PluginMessage, PluginMessageType } from "./common/PluginMessage";
+import { navigateToNode } from "./plugin/navigate-to-node";
 import { showPluginUi } from "./plugin/show-plugin-ui";
 import { startPlugin } from "./plugin/start-plugin";
-import { updatetNode } from "./plugin/update-node";
+import { updateNode } from "./plugin/update-node";
 
 figma.ui.onmessage = (msg: PluginMessage) => {
     switch (msg.type) {
@@ -10,7 +11,11 @@ figma.ui.onmessage = (msg: PluginMessage) => {
             break;
 
         case PluginMessageType.UpdateNode:
-            updatetNode(msg.node, msg.newText);
+            updateNode(msg.node, msg.newText);
+            break;
+
+        case PluginMessageType.NavigateToNode:
+            navigateToNode(msg.node);
             break;
 
         default: 

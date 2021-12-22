@@ -1,7 +1,7 @@
 .edit-result__text {
     text-align: start;
     outline: none;
-    height: 10em;
+    height: 6em;
     border: solid 1px;
     border-color: var(--secondary-color);
     border-radius: 10px;
