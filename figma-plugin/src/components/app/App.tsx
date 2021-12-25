@@ -38,7 +38,11 @@ export function App (
     }
 
     if (isLoading) {
-        return renderApp(<>Загрузка...</>);
+        return renderApp(
+            <div className="app__startup">
+                <div className="app__loading">Загрузка...</div>
+            </div>
+        );
     }
 
     if (editResult) {
@@ -51,7 +55,9 @@ export function App (
                 />
             );
         } else {
-            return renderApp(<>Не нашли ошибок</>);
+            return renderApp(
+                <div className="app__startup">Не нашли ошибок</div>
+            );
         }
     }
 

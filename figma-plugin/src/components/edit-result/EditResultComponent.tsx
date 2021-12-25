@@ -61,22 +61,26 @@ export function EditResultComponent (
 
     return (
         <div className="edit-result">
-            <pre contentEditable
-                className="edit-result__text"  
-                ref={ref} 
-                onMouseMove={onMouseMove}
-                onMouseLeave={removeHovers}
-                onClick={onClick}
-                dangerouslySetInnerHTML={{ __html: textHtml }}
-            />
+            <div className="edit-result__container">
+                <button className="edit-result__next-btn" onClick={onPrev}>&lt;</button>
 
-            {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
+                <pre contentEditable
+                    className="edit-result__text"  
+                    ref={ref} 
+                    onMouseMove={onMouseMove}
+                    onMouseLeave={removeHovers}
+                    onClick={onClick}
+                    dangerouslySetInnerHTML={{ __html: textHtml }}
+                />
+
+                {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
+
+                <button className="edit-result__next-btn" onClick={onNext}>&gt;</button>
+            </div>
 
             <div className="edit-result__buttons-bar">
-                <button onClick={onPrev}>Предыдущий</button>
                 <button onClick={onCleanupClick}>Сбросить</button>
                 <button className={applyButtonClass} onClick={onApply}>Применить</button>
-                <button onClick={onNext}>Следующий</button>
             </div>
         </div>
     );
