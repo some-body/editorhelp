@@ -26,14 +26,23 @@
 }
 
 .edit-result__next-btn {
-    /* border: 1px solid var(--secondary-color); */
-    border: none;
-    background: var(--secondary-color);
+    width: 40px;
+    padding: 0;
     opacity: 0.3;
     color: var(--text-color);
 }
 
 .edit-result__next-btn:hover {
-    border: none;
     opacity: 0.5;
+}
+
+.edit-result__next-btn[disabled] {
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+    cursor: default;
+}
+
+.edit-result__next-btn:hover[disabled] {
+    border: 1px solid var(--secondary-color);
+    opacity: 0.3;
 }

@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
 import { EditResultComponent } from '../edit-result/EditResultComponent';
 import { EditState, StateChangeHandler } from '../edit-result/EditResultComponentProps';
 import { EditResultPageProps } from './EditResultPageProps';
+import useKeypress from 'react-use-keypress';
 import './EditResultPage.css';
 
 export function EditResultPage (
@@ -11,6 +12,9 @@ export function EditResultPage (
 
     const [resultIndex, setResultIndex] = useState<number>(0);
     const [editStates, setEditStates] = useState<Record<number, EditState>>({});
+
+    const hasPrev = resultIndex > 0;
+    const hasNext = resultIndex < editResults.length - 1;
 
     const update: StateChangeHandler = useCallback((editState: EditState) => {
         const newEditStates = { ...editStates };
@@ -28,7 +32,7 @@ export function EditResultPage (
     }, []);
 
     const showPrev = useCallback(() => {
-        if (resultIndex <= 0) {
+        if (!hasPrev) {
             return;
         }
 
@@ -38,7 +42,7 @@ export function EditResultPage (
     }, [resultIndex]);
 
     const showNext = useCallback(() => {
-        if (resultIndex >= editResults.length - 1) {
+        if (!hasNext) {
             return;
         }
 
@@ -66,6 +70,19 @@ export function EditResultPage (
     const editState = editStates[resultIndex];
     const isModified = editState && editState.text !== editResults[resultIndex].originalText;
 
+    useKeypress(['ArrowLeft', 'ArrowRight'], (event) => {
+        switch (event.key) {
+            case 'ArrowLeft':
+                showPrev();
+                break;
+            case 'ArrowRight':
+                showNext();
+                break;
+            default: 
+                // ignore.
+        }
+    });
+
     return (
         <div className="edit-result-page">
             <EditResultComponent 
@@ -76,6 +93,8 @@ export function EditResultPage (
                 onPrev={showPrev}
                 onNext={showNext}
                 onApply={apply}
+                hasPrev={hasPrev}
+                hasNext={hasNext}
             />
         </div>
     );

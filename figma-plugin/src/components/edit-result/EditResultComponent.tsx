@@ -1,4 +1,4 @@
-import React, { FormEvent, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FormEvent, KeyboardEvent, useCallback, useMemo, useRef, useState } from 'react';
 import { GroupToken, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
@@ -11,7 +11,7 @@ import './EditResultComponent.css';
 const tokenizator = new Tokenizator();
 
 export function EditResultComponent (
-    { editResult, onUpdate, onApply, onNext, onPrev, initState, isModified }: EditResultComponentProps,
+    { editResult, onUpdate, onApply, onNext, onPrev, initState, isModified, hasPrev, hasNext }: EditResultComponentProps,
 ): JSX.Element {
     // TODO: Попросить отнавигироваться к нужной штуке.
 
@@ -62,7 +62,7 @@ export function EditResultComponent (
     return (
         <div className="edit-result">
             <div className="edit-result__container">
-                <button className="edit-result__next-btn" onClick={onPrev}>&lt;</button>
+                <button disabled={!hasPrev} className="edit-result__next-btn" onClick={onPrev}>&lt;</button>
 
                 <pre contentEditable
                     className="edit-result__text"  
@@ -75,7 +75,7 @@ export function EditResultComponent (
 
                 {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
-                <button className="edit-result__next-btn" onClick={onNext}>&gt;</button>
+                <button disabled={!hasNext} className="edit-result__next-btn" onClick={onNext}>&gt;</button>
             </div>
 
             <div className="edit-result__buttons-bar">

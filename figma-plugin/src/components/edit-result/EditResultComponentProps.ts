@@ -13,6 +13,8 @@ export interface EditResultComponentProps {
     isModified: boolean;
     onUpdate: StateChangeHandler;
     onApply: () => void;
-    onNext: () => void;
     onPrev: () => void;
+    onNext: () => void;
+    hasPrev: boolean;
+    hasNext: boolean;
 }
