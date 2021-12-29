@@ -1,4 +1,4 @@
-import React, { FormEvent, KeyboardEvent, useCallback, useMemo, useRef, useState } from 'react';
+import React, { FormEvent, useCallback, useMemo, useRef, useState } from 'react';
 import { GroupToken, Tokenizator } from '../../services/Tokenizator';
 import { EditResultComponentProps } from './EditResultComponentProps';
 import { ERROR_DATA_ATTR, groupTokenComponentToString } from '../token/TokenComponent';
@@ -25,11 +25,21 @@ export function EditResultComponent (
 
     const [suggestTarget, setSuggestTarget] = useState<HTMLElement>(undefined);
 
-    useMutations(ref, (node) => {
+    const cancelMutationsObserver = useMutations(ref, (node) => {
         setSuggestTarget(undefined);
         removeErrorForAllParents(ref.current, node);
         onUpdate({ html: ref.current.innerHTML, text: ref.current.innerText });
     }, [onUpdate]);
+
+    const onNavigatePrev = useCallback(() => {
+        cancelMutationsObserver();
+        onPrev();
+    }, [onPrev]);
+
+    const onNavigateNext = useCallback(() => {
+        cancelMutationsObserver();
+        onNext();
+    }, [onNext]);
 
     const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
 
@@ -65,10 +75,10 @@ export function EditResultComponent (
         }
         switch (event.key) {
             case 'ArrowLeft':
-                onPrev();
+                onNavigatePrev();
                 break;
             case 'ArrowRight':
-                onNext();
+                onNavigateNext();
                 break;
             default: 
                 // ignore.
@@ -78,7 +88,7 @@ export function EditResultComponent (
     return (
         <div className="edit-result">
             <div className="edit-result__container">
-                <button disabled={!hasPrev} className="edit-result__next-btn" onClick={onPrev}>&lt;</button>
+                <button disabled={!hasPrev} className="edit-result__next-btn" onClick={onNavigatePrev}>&lt;</button>
 
                 <pre contentEditable
                     className="edit-result__text"  
@@ -91,7 +101,7 @@ export function EditResultComponent (
 
                 {renderSuggest(suggestTarget, onSuggestClick, onClickOutside)}
 
-                <button disabled={!hasNext} className="edit-result__next-btn" onClick={onNext}>&gt;</button>
+                <button disabled={!hasNext} className="edit-result__next-btn" onClick={onNavigateNext}>&gt;</button>
             </div>
 
             <div className="edit-result__buttons-bar">
