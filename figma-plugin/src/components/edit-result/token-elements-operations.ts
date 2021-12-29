@@ -3,7 +3,7 @@ import { ERROR_CLASS, ERROR_DATA_ATTR } from "../token/TokenComponent";
 const HOVERED_CLASS = 'hovered';
 
 export function removeErrorForAllParents(root: HTMLElement, node: HTMLElement) {
-    if (node === root || root.parentElement === node) {
+    if (!node || node === root || root.parentElement === node) {
         return;
     }
 

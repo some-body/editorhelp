@@ -3,6 +3,7 @@
 }
 
 .edit-result__text {
+    overflow: auto;
     width: 100%;
     height: 6em;
     text-align: start;

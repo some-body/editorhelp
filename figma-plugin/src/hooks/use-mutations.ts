@@ -13,6 +13,7 @@ export function useMutations(ref: any, handler: (element: HTMLElement) => void, 
             subtree: true,
             characterData: true,
             // childList: true,
+            // TODO: проблема с новыми строками в начале
         });
 
         return () => {

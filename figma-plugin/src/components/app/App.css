@@ -1,8 +1,10 @@
 .app__root {
+    --bg-color: #fff;
     --text-color: #000;
-    --text-contrast-color: #fff;
+    --text-contrast-color: var(--bg-color);
     --secondary-color: #bbb;
-    --accent-color: rgb(228 0 255);
+    --accent-color: rgb(228, 0, 255);
+    --accent-color-transparent: rgba(228, 0, 255, 0.1);
 
     --gap-m: 16px;
     --gap-s: 12px;
@@ -31,6 +33,7 @@
 .app__loading {
     animation: rotating 1s linear infinite;
     cursor: default;
+    user-select: none;
 }
 
 @keyframes rotating {
@@ -45,7 +48,7 @@
 button {
     position: relative;
     border-radius: 5px;
-    background: white;
+    background: var(--bg-color);
     color: var(--text-color);
     border: none;
     padding: 8px 15px;
@@ -56,9 +59,13 @@ button {
     opacity: 0.8;
 }
 
-button:hover {
-    border: 1px solid var(--accent-color);
+button:hover:not([disabled]) {
+    background: var(--accent-color-transparent);
     opacity: 1;
+}
+
+button:focus {
+    border: 1px solid var(--accent-color);
 }
 
 button.click-me {

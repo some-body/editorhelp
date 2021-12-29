@@ -2,7 +2,6 @@ import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useState 
 import { EditResultComponent } from '../edit-result/EditResultComponent';
 import { EditState, StateChangeHandler } from '../edit-result/EditResultComponentProps';
 import { EditResultPageProps } from './EditResultPageProps';
-import useKeypress from 'react-use-keypress';
 import './EditResultPage.css';
 
 export function EditResultPage (
@@ -69,19 +68,6 @@ export function EditResultPage (
 
     const editState = editStates[resultIndex];
     const isModified = editState && editState.text !== editResults[resultIndex].originalText;
-
-    useKeypress(['ArrowLeft', 'ArrowRight'], (event) => {
-        switch (event.key) {
-            case 'ArrowLeft':
-                showPrev();
-                break;
-            case 'ArrowRight':
-                showNext();
-                break;
-            default: 
-                // ignore.
-        }
-    });
 
     return (
         <div className="edit-result-page">
