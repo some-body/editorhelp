@@ -1,4 +1,4 @@
-import React, { KeyboardEventHandler, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EditResultComponent } from '../edit-result/EditResultComponent';
 import { EditState, StateChangeHandler } from '../edit-result/EditResultComponentProps';
 import { EditResultPageProps } from './EditResultPageProps';
@@ -52,7 +52,9 @@ export function EditResultPage (
 
     const apply = useCallback(() => {
         const textEditResult = editResults[resultIndex];
-        const newText = editStates[resultIndex]?.text || textEditResult.originalText;
+
+        const editState = editStates[resultIndex];
+        const newText = editState?.text || textEditResult.originalText;
 
         onApplyTextChanges(textEditResult, newText);
         
@@ -64,6 +66,17 @@ export function EditResultPage (
         };
 
         setEditResults(newEditResults);
+
+        if (editState) {
+            setEditStates({
+                ...editStates,
+                [resultIndex]: {
+                    text: editState.text,
+                    html: undefined,
+                },
+            });
+        }
+
     }, [onApplyTextChanges, resultIndex, editResult, editStates]);
 
     const editState = editStates[resultIndex];
