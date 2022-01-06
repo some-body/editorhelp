@@ -34,12 +34,12 @@ export function EditResultComponent (
     const onNavigatePrev = useCallback(() => {
         cancelMutationsObserver();
         onPrev();
-    }, [onPrev]);
+    }, [onPrev, cancelMutationsObserver]);
 
     const onNavigateNext = useCallback(() => {
         cancelMutationsObserver();
         onNext();
-    }, [onNext]);
+    }, [onNext, cancelMutationsObserver]);
 
     const removeHovers = useCallback(() => removeHoverClasses(ref.current), [ref]);
 
@@ -63,9 +63,10 @@ export function EditResultComponent (
     const onClickOutside = useCallback(() => setSuggestTarget(undefined), []);
 
     const onCleanupClick = useCallback(() => {
+        cancelMutationsObserver();
         ref.current.innerHTML = groupTokenComponentToString(new GroupToken(origTokens));
         onUpdate({ html: ref.current.innerHTML, text: ref.current.innerText });
-    }, [ref, origTokens]);
+    }, [ref, origTokens, cancelMutationsObserver, onUpdate]);
 
     const applyButtonClass = isModified ? 'click-me' : '';
 
