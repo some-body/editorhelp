@@ -7,8 +7,11 @@
     position: relative;
     display: inline-block;
     background: rgba(255, 0, 0, 0.25);
-    cursor: pointer;
     border-radius: 3px;
+}
+
+.token_type_error.clickable {
+    cursor: pointer;
 }
 
 .token_type_error.hovered {

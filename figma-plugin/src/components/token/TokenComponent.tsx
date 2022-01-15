@@ -22,10 +22,17 @@ export function TextTokenComponent (
 export function GroupTokenComponent (
     { token }: GroupTokenComponentProps,
 ) {
+    const suggestsCount = token.error?.suggests?.length || 0;
+    const clickableClassName = suggestsCount > 0 ? 'clickable' : '';
+
     const errorClassName = token.error ? ERROR_CLASS : '';
 
     return (
-        <span className={`token ${errorClassName}`} data-error={JSON.stringify(token.error)}>
+        <span 
+            className={`token ${errorClassName} ${clickableClassName}`} 
+            title={token.error?.errorTitle} 
+            data-error={JSON.stringify(token.error)}
+        >
             {token.tokens.map((t) => renderToken(t))}
         </span>
     );

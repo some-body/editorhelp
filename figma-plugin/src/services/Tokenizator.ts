@@ -17,14 +17,14 @@ export class TextToken implements Token {
 }
 
 export class TokenError {
-    errorCode: string;
+    errorTitle: string;
     suggests: Suggest[];
 
     constructor (
-        errorCode: string,
+        errorTitle: string,
         suggests: Suggest[] = [],
     ) {
-        this.errorCode = errorCode;
+        this.errorTitle = errorTitle;
         this.suggests = suggests;
     }
 }
@@ -83,14 +83,14 @@ export class Tokenizator {
 
             if (hasInnerErrors) {
                 const { tokensInRange, realRangeEnd } = this.tokenizeRange(text, currError.pos, errEnd, nextErrors);
-                const tokenError = new TokenError(currError.code, currError.suggests);
+                const tokenError = new TokenError(currError.title, currError.suggests);
                 tokens.push(new GroupToken(tokensInRange, tokenError));
 
                 currPosition = realRangeEnd;
                 errorsLeft = errorsLeft.filter((err) => err.pos > realRangeEnd)
             } else {
                 const textToToken = text.substring(currError.pos, errEnd);
-                const tokenError = new TokenError(currError.code, currError.suggests);
+                const tokenError = new TokenError(currError.title, currError.suggests);
                 tokens.push(new GroupToken([new TextToken(textToToken)], tokenError));
                 currPosition = errEnd;
                 errorsLeft = [...nextErrors];

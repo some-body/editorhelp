@@ -3,10 +3,12 @@ export interface Suggest {
     title: string;
 }
 
+export type ErrorCode = 'TYPO' | 'DUPLICATES' | 'YO' | 'UNKNOWN';
+
 export interface EditError {
     pos: number;
     len: number;
-    code: string;
+    code: ErrorCode;
     title?: string;
     suggests: Suggest[];
 }

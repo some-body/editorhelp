@@ -1,4 +1,4 @@
-import { SpellCheckError } from "../entities/spell-check-error";
+import { EditError, ErrorCode, Suggest } from "../controllers/dto/edit-result-dto";
 const { checkText : yaCheckText } = require('yaspeller');
 const Eyo = require('eyo-kernel');
 
@@ -7,11 +7,11 @@ safeEyo.dictionary.loadSafeSync();
 
 export class SpellCheck {
 
-    async checkTexts (texts: string[]): Promise<SpellCheckError[][]> {
+    async checkTexts (texts: string[]): Promise<EditError[][]> {
         return Promise.all(texts.map((t) => this.checkText(t)));
     }
 
-    async checkText (text: string): Promise<SpellCheckError[]> {
+    async checkText (text: string): Promise<EditError[]> {
         return new Promise((res, rej) => {
             yaCheckText(text, (err?: any, result?: any) => {
                 if (err) {
@@ -25,11 +25,16 @@ export class SpellCheck {
                 }
 
                 try {
-                    const mappedResult: SpellCheckError[] = result.map((e) => ({
-                        len: getLen(e),
-                        pos: getPos(e),
-                        s: getSuggests(e),
-                    }));
+                    const mappedResult: EditError[] = result.map((e) => {
+                        const code = getCode(e);
+                        return {
+                            len: getLen(e),
+                            pos: getPos(e),
+                            suggests: getSuggests(e),
+                            code: code,
+                            title: getTitle(code),
+                        };
+                    });
 
                     res(mappedResult);
 
@@ -42,7 +47,7 @@ export class SpellCheck {
     }
 }
 
-function getLen(checkRes: any): number {
+function getLen (checkRes: any): number {
     if (Number.isInteger(checkRes.len)) {
         return checkRes.len;
     }
@@ -54,7 +59,7 @@ function getLen(checkRes: any): number {
     return checkRes.word.length;
 }
 
-function getPos(checkRes: any): number {
+function getPos (checkRes: any): number {
     if (Number.isInteger(checkRes.pos)) {
         return checkRes.pos;
     }
@@ -73,7 +78,7 @@ function getPos(checkRes: any): number {
     return firstPos.index;
 }
 
-function getSuggests(checkRes: any): string[] {
+function getSuggests (checkRes: any): Suggest[] {
     const suggests = checkRes.s;
 
     const isValidSuggests = Array.isArray(suggests) 
@@ -84,5 +89,26 @@ function getSuggests(checkRes: any): string[] {
     }
 
     // Eyo is not applied to suggests in yaspeller – do it manually.
-    return suggests.map((s) => safeEyo.restore(s));
+    const suggestStringsWithYo = suggests.map((s) => safeEyo.restore(s));
+
+    return suggestStringsWithYo.map((s): Suggest => ({ title: s, value: s }));
+}
+
+function getCode (checkRes: any): ErrorCode {
+    switch (checkRes.code) {
+        case 1: return 'TYPO';
+        case 2: return 'DUPLICATES';
+        case 100: return 'YO';
+        default: return 'UNKNOWN';
+    }
+}
+
+function getTitle (code: ErrorCode): string {
+    switch (code) {
+        case 'DUPLICATES': return 'Дубликат';
+        case 'YO': return 'Буква ё';
+        case 'TYPO':
+        case 'UNKNOWN':
+        default: return 'Ошибка';
+    }
 }

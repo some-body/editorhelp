@@ -25,18 +25,9 @@ export class EditController extends ApiController {
 
         const output: EditResultDto = {
             textEditResults: checkResults.map((checkRes): TextEditResult => ({
-                errors: checkRes.map((err): EditError => ({
-                    pos: err.pos,
-                    len: err.len,
-                    code: 'SPELLING_ERROR',
-                    title: 'Ошибка (наверное)',
-                    suggests: err.s.map((yaSuggest): Suggest => ({
-                        title: yaSuggest,
-                        value: yaSuggest,
-                    })),
-                })),
+                errors: checkRes,
             })),
         };
-        res.send(output)
+        res.send(output);
     }
 }
