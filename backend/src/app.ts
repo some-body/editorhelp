@@ -44,17 +44,24 @@ function withExceptionHandling(handler: Handler): Handler {
     };
 }
 
-const server = serverless(app);
+if (process.env.NODE_ENV === 'dev') {
+    const PORT = 8080;
+    app.listen(PORT, () => {
+        console.log(`Dev server started at http://localhost:${PORT}`)
+    });
+} else {
+    const server = serverless(app);
 
-module.exports.handler = (event: any, context: any) => {
-    const url: string = event.url;
-
-    const newPath = url.endsWith('?') ? url.slice(0, url.length - 1) : url;
-
-    const patchedEvent = {
-        ...event,
-        path: newPath,
-        originalPath: event.path,
-    };
-    return server(patchedEvent, context);
+    module.exports.handler = (event: any, context: any) => {
+        const url: string = event.url;
+    
+        const newPath = url.endsWith('?') ? url.slice(0, url.length - 1) : url;
+    
+        const patchedEvent = {
+            ...event,
+            path: newPath,
+            originalPath: event.path,
+        };
+        return server(patchedEvent, context);
+    }
 }
